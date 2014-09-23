@@ -1,0 +1,42 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.hostname = 'ubuntu-dev'
+
+    # Hadoop Node Manager
+    config.vm.network "forwarded_port", guest: 8042, host: 8042
+    # Hadoop Resource Manager
+    config.vm.network "forwarded_port", guest: 8088, host: 8088
+    # SSH
+    config.vm.network "forwarded_port", guest: 22, host: 2200
+    # Channel in, out, control
+    config.vm.network "forwarded_port", guest: 5540, host: 5540
+    config.vm.network "forwarded_port", guest: 5541, host: 5541
+    config.vm.network "forwarded_port", guest: 5542, host: 5542
+    # MongoDB
+    config.vm.network "forwarded_port", guest: 27017, host: 27017
+    # Docker Registry
+    config.vm.network "forwarded_port", guest: 5000, host: 5000
+    # Docker
+    config.vm.network "forwarded_port", guest: 4243, host: 4243
+    # Remote Command Agent
+    config.vm.network "forwarded_port", guest: 8008, host: 8008
+    # zerog collector
+    config.vm.network "forwarded_port", guest: 6969, host: 6969
+
+    #config.vm.network "private_network", ip: "192.168.33.10"
+    #config.vm.network "public_network"
+
+    #config.ssh.forward_agent = true
+
+    #config.vm.synced_folder "../data", "/vagrant_data"
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "8192"]
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
+    end
+end
