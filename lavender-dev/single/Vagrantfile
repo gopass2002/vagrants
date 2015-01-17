@@ -6,6 +6,9 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "ubuntu/trusty64"
     config.vm.hostname = 'ubuntu-dev'
+
+    config.vm.synced_folder "/Users/gopass2002/Lavender", "/home/lavender/Lavender", disabled: false, owner: "lavender", group: "lavender"
+    config.vm.synced_folder "/Users/gopass2002/virtualenvs/lavender", "/home/lavender/env", disabled: false, owner: "lavender", group: "lavender"
     
     # Hadoop NameNode
     config.vm.network "forwarded_port", guest: 50070, host: 50070

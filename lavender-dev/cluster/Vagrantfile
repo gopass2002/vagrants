@@ -1,19 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    #Ubuntu 12.04 LTS
-    #box_url = 'https://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box'
-    #box_name = 'ubuntu-1204lts-x64'
-
-    #Ubuntu 14.04 LTS Beta
-    box_url = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
-    box_name = 'ubuntu-1404-lts-x64'
-
-
+#box_url = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
+#box_name = 'ubuntu-1404-lts-x64'
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.hostname = "ubuntu-dev"
 
     config.vm.define :master do |master|
         master.vm.box_url = box_url

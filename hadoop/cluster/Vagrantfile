@@ -1,0 +1,47 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.hostname = "ubuntu-dev"
+
+    config.vm.define :master do |master|
+        master.vm.hostname = 'vm-cluster-master'
+        master.vm.provider :virtualbox do |v|
+            v.name ="vm-cluster-master"
+            v.customize ["modifyvm", :id, "--memory", "4096"]
+            v.customize ["modifyvm", :id, "--cpus", "1"]
+        end
+        master.vm.network :private_network, ip: "192.168.250.2"
+        master.vm.network :forwarded_port, guest: 22, host: 4222
+        master.vm.network :forwarded_port, guest: 8088, host: 8088
+        master.vm.network :forwarded_port, guest: 50070, host: 50070
+    end
+
+    config.vm.define :slave1 do |slave1|
+        slave1.vm.hostname = 'vm-cluster-slave1'
+        slave1.vm.provider :virtualbox do |v|
+            v.name ="vm-cluster-slave1"
+            v.customize ["modifyvm", :id, "--memory", "2048"]
+            v.customize ["modifyvm", :id, "--cpus", "1"]
+        end
+        slave1.vm.network :private_network, ip: "192.168.250.4"
+        slave1.vm.network :forwarded_port, guest: 22, host: 4200
+        slave1.vm.network :forwarded_port, guest: 8042, host: 18142
+    end
+
+    config.vm.define :slave2 do |slave2|
+        slave2.vm.hostname = 'vm-cluster-slave2'
+        slave2.vm.provider :virtualbox do |v|
+            v.name ="vm-cluster-slave2"
+            v.customize ["modifyvm", :id, "--memory", "2048"]
+            v.customize ["modifyvm", :id, "--cpus", "1"]
+        end
+        slave2.vm.network :private_network, ip: "192.168.250.6"
+        slave2.vm.network :forwarded_port, guest: 22, host: 4201
+        slave2.vm.network :forwarded_port, guest: 8042, host: 18242
+    end
+
+end
