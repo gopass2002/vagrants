@@ -4,56 +4,33 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    #box_url = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
-    #box_name = 'ubuntu-1404-lts-x64'
     config.vm.box = "ubuntu/trusty64"
-    config.vm.hostname = "ubuntu-dev"
 
-    config.vm.define :master do |master|
-        master.vm.hostname = 'master'
-        master.vm.network :private_network, ip: "192.168.250.2"
-        master.vm.network :forwarded_port, guest: 22, host: 2000
-        #remote api
-        master.vm.network :forwarded_port, guest: 8008, host: 18008
-        #Hadoop
-        master.vm.network :forwarded_port, guest: 8088, host: 18088
-        master.vm.network :forwarded_port, guest: 8042, host: 18042
-        master.vm.network :forwarded_port, guest: 50070, host: 50170
-        #docker
-        master.vm.network :forwarded_port, guest: 2375, host: 12375
-        master.vm.network :forwarded_port, guest: 5000, host: 15000
-        #Mongodb
-        master.vm.network :forwarded_port, guest: 27017, host: 27117
+    config.vm.synced_folder "/Users/gopass2002/Lavender", "/home/lavender/lavender", disabled: false, owner: "lavender", group: "lavender"
+    config.vm.synced_folder "/Users/gopass2002/virtualenvs/lavender", "/home/lavender/env", disabled: false, owner: "lavender", group: "lavender"
+    config.vm.provision "shell", path: "provision.sh"
+
+    config.vm.define :master do |node|
+        node.vm.hostname = 'master'
+        node.vm.network "public_network", ip: "192.168.20.200"
+        node.vm.network "public_network", bridge: 'en6'
+        node.ssh.insert_key = 'true'
     end
 
-    config.vm.define :slave1 do |slave|
-        slave.vm.hostname = 'slave1'
-        slave.vm.network :private_network, ip: "192.168.250.4"
-        slave.vm.network :forwarded_port, guest: 22, host: 2001
-        #Hadoop
-        slave.vm.network :forwarded_port, guest: 8042, host: 18142
+    config.vm.define :slave1 do |node|
+        node.vm.hostname = 'slave1'
+        node.vm.network "public_network", ip: "192.168.20.201"
+        node.vm.network "public_network", bridge: 'en6'
     end
 
-    config.vm.define :slave2 do |slave|
-        slave.vm.hostname = 'slave2'
-        slave.vm.network :private_network, ip: "192.168.250.6"
-        slave.vm.network :forwarded_port, guest: 22, host: 2002
-        #Hadoop
-        slave.vm.network :forwarded_port, guest: 8042, host: 18242
+    config.vm.define :slave2 do |node|
+        node.vm.hostname = 'slave2'
+        node.vm.network "public_network", ip: "192.168.20.202"
+        node.vm.network "public_network", bridge: 'en6'
     end
 
-
-    config.vm.define :slave3 do |slave|
-        slave.vm.hostname = 'slave3'
-        slave.vm.network :private_network, ip: "192.168.250.8"
-        slave.vm.network :forwarded_port, guest: 22, host: 2003
-        #Hadoop
-        slave.vm.network :forwarded_port, guest: 8042, host: 18342
-    end
-
-    config.vm.provider :virtualbox do |virtualbox|
-        virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        virtualbox.customize ["modifyvm", :id, "--memory", "8192"]
-        virtualbox.customize ["modifyvm", :id, "--cpus", "1"]
+    config.vm.provider "virtualbox" do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "8192"]
+        vb.customize ["modifyvm", :id, "--cpus", "2"]
     end
 end
