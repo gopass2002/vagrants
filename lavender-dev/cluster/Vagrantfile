@@ -4,17 +4,15 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-#box_url = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
-#box_name = 'ubuntu-1404-lts-x64'
+    #box_url = 'https://cloud-images.ubuntu.com/vagrant/trusty/current/trusty-server-cloudimg-amd64-vagrant-disk1.box'
+    #box_name = 'ubuntu-1404-lts-x64'
     config.vm.box = "ubuntu/trusty64"
     config.vm.hostname = "ubuntu-dev"
 
     config.vm.define :master do |master|
-        master.vm.box_url = box_url
-        master.vm.box = box_name
         master.vm.hostname = 'master'
         master.vm.network :private_network, ip: "192.168.250.2"
-        master.vm.network :forwarded_port, guest: 22, host: 4222
+        master.vm.network :forwarded_port, guest: 22, host: 2000
         #remote api
         master.vm.network :forwarded_port, guest: 8008, host: 18008
         #Hadoop
@@ -29,39 +27,33 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.vm.define :slave1 do |slave|
-        slave.vm.box_url = box_url
-        slave.vm.box = box_name
         slave.vm.hostname = 'slave1'
         slave.vm.network :private_network, ip: "192.168.250.4"
-        slave.vm.network :forwarded_port, guest: 22, host: 4200
+        slave.vm.network :forwarded_port, guest: 22, host: 2001
         #Hadoop
         slave.vm.network :forwarded_port, guest: 8042, host: 18142
     end
 
     config.vm.define :slave2 do |slave|
-        slave.vm.box_url = box_url
-        slave.vm.box = box_name
         slave.vm.hostname = 'slave2'
         slave.vm.network :private_network, ip: "192.168.250.6"
-        slave.vm.network :forwarded_port, guest: 22, host: 4201
+        slave.vm.network :forwarded_port, guest: 22, host: 2002
         #Hadoop
         slave.vm.network :forwarded_port, guest: 8042, host: 18242
     end
 
 
     config.vm.define :slave3 do |slave|
-        slave.vm.box_url = box_url
-        slave.vm.box = box_name
         slave.vm.hostname = 'slave3'
         slave.vm.network :private_network, ip: "192.168.250.8"
-        slave.vm.network :forwarded_port, guest: 22, host: 4202
+        slave.vm.network :forwarded_port, guest: 22, host: 2003
         #Hadoop
         slave.vm.network :forwarded_port, guest: 8042, host: 18342
     end
 
     config.vm.provider :virtualbox do |virtualbox|
         virtualbox.customize ["modifyvm", :id, "--ioapic", "on"]
-        virtualbox.customize ["modifyvm", :id, "--memory", "10240"]
-        virtualbox.customize ["modifyvm", :id, "--cpus", "4"]
+        virtualbox.customize ["modifyvm", :id, "--memory", "8192"]
+        virtualbox.customize ["modifyvm", :id, "--cpus", "1"]
     end
 end
