@@ -4,7 +4,7 @@
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-    config.vm.box = "ubuntu/trusty64"
+    config.vm.box = "chef/ubuntu-14.04"
     config.vm.hostname = 'ubuntu-dev'
 
     config.vm.synced_folder "/Users/gopass2002/Lavender", "/home/lavender/lavender", disabled: false, owner: "lavender", group: "lavender"
@@ -13,7 +13,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "shell", path: "provision.sh"
     
     # Hadoop NameNode
-    config.vm.network "forwarded_port", guest: 9000, host: 9000
     config.vm.network "forwarded_port", guest: 50070, host: 50070
     # Hadoop DameNode
     config.vm.network "forwarded_port", guest: 50075, host: 50075
@@ -24,7 +23,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Hadoop Resource Manager
     config.vm.network "forwarded_port", guest: 8088, host: 8088
     # SSH
-    config.vm.network "forwarded_port", guest: 22, host: 2000, id: "ssh", disable: true
+    config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh", disable: true
     # Channel in, out, control
     config.vm.network "forwarded_port", guest: 5540, host: 5540
     config.vm.network "forwarded_port", guest: 5541, host: 5541
@@ -59,8 +58,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     #config.vm.synced_folder "../data", "/vagrant_data"
 
-    config.vm.provider "virtualbox" do |vb|
-        vb.customize ["modifyvm", :id, "--memory", "10240"]
-        vb.customize ["modifyvm", :id, "--cpus", "2"]
+    config.vm.provider "vmware_fustion" do |v|
+        v.gui = true
+        v.vmx["memsize"] = "10240"
+        v.vmx["numvcpus"] = "2"
     end
 end
