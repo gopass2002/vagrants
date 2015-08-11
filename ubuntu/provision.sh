@@ -1,13 +1,13 @@
 #!/bin/bash
 
-# add user (lavender)
-addgroup lavender
-useradd -g lavender -d /home/lavender -s /bin/bash -m lavender
-echo -e "lavender\nlavender" | (passwd lavender)
+# add user (ubuntu-dev)
+addgroup ubuntu-dev
+useradd -g ubuntu-dev -d /home/ubuntu-dev -s /bin/bash -m ubuntu-dev
+echo -e "root\nroot" | (passwd ubuntu-dev)
 
-# add sudo privilege to lavender
+# add sudo privilege to ubuntu-dev
 chmod u+w /etc/sudoers
-echo "lavender   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
+echo "ubuntu-dev   ALL=(ALL)   NOPASSWD: ALL" >> /etc/sudoers
 chmod u-w /etc/sudoers
 
 # modify apt-get repository url
@@ -21,7 +21,7 @@ apt-get update
 apt-get install -y lxc-docker
 
 # given non-root access to docker
-gpasswd -a lavender docker
+gpasswd -a ubuntu-dev docker
 
 #update docker daemon
 sed -i -e 's/DOCKER_OPTS=/DOCKER_OPTS="-H unix:\/\/\/var\/run\/docker.sock -H tcp:\/\/0.0.0.0:2375 --insecure-registry 0.0.0.0:5000"/g' /etc/init/docker.conf
@@ -32,4 +32,3 @@ update-grub
 
 # restart docker daemon
 service docker restart
-
